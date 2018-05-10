@@ -66,7 +66,8 @@
 #         "seenEpoch":0,
 #         "ipv4":"/123.45.67.89",
 #         "ipv6":"/ff11:2233:4455:6677:8899:0:aabb:ccdd",
-#         "rssi":24,
+#         "
+#           rssi":24,
 #         "ssid":"Cisco WiFi",
 #         "manufacturer":"Meraki",
 #         "os":"Linux",
@@ -174,6 +175,7 @@ class Client
   property :os,         String
   property :ssid,       String
   property :floors,     String
+  property :rssi,       Float
 end
 
 DataMapper.finalize
@@ -211,13 +213,10 @@ post '/events' do
     logger.warn "got post with unexpected version: #{map['version']}"
     return
   end
-  if map['type'] != 'DevicesSeen'
-    logger.warn "got post for event that we're not interested in: #{map['type']}"
-    return
-  end
+
   map['data']['observations'].each do |c|
-    loc = c['location']
-    next if loc == nil
+    loc  = c['location']
+    next if loc == nil || c['ssid'] == nil
     name = c['clientMac']
     lat = loc['lat']
     lng = loc['lng']
@@ -233,7 +232,8 @@ post '/events' do
                             :unc => loc['unc'],
                             :manufacturer => c['manufacturer'], :os => c['os'],
                             :ssid => c['ssid'],
-                            :floors => floors
+                            :floors => floors,
+                            :rssi => c['rssi']
                           }
       client.save
     end
