@@ -190,7 +190,6 @@ class BLEClient
   property :unc,        Float
   property :x,          Float
   property :y,          Float
-  property :ssid,       String
   property :floors,     String
   property :rssi,       Float
 end
