@@ -244,17 +244,8 @@ post '/events' do
      floors = map['data']['apFloors'] == nil ? "" : map['data']['apFloors'].join
      logger.info "AP #{map['data']['apMac']} on #{map['data']['apFloors']}: #{c}"
      next if (seenEpoch == nil || seenEpoch == 0)  # This probe is useless, so ignore it
-     bleclient = BLEClient.first_or_create(:mac => name)
-     if (seenEpoch > bleclient.seenEpoch)             # If client was created, this will always be true
-      bleclient.attributes = { :lat => lat, :lng => lng,
-                            :seenString => seenString, :seenEpoch => seenEpoch,
-                            :unc => loc['unc'],
-                            :x => x, :y => y,
-                            :floors => floors,
-                            :rssi => c['rssi']
-                          }
-      bleclient.save
-      logger.info "data is #{bleclient}"
+     bleclient = BLEClient.first_or_create(:mac => name, :lat => lat, :lng => lng)                
+     bleclient.save
     end
    end
   end
@@ -307,15 +298,16 @@ end
 # This matches
 #   /clients OR /clients/
 # and returns a JSON blob of all clients.
+get %r{/bleclients/?} do
+  content_type :json
+  clients = BLEClient.all()
+  JSON.generate(clients)
+#  logger.info "clients is #{clients.first.attributes}"
+end
+
 get %r{/clients/?} do
   content_type :json
   clients = Client.all(:seenEpoch.gt => (Time.new - 300).to_i)
-  JSON.generate(clients)
-end
-
-get %r{/bleclients/?} do
-  content_type :json
-  clients = BLEClient.all(:seenEpoch.gt => (Time.new - 300).to_i)
-  logger.info "Saved BLE Clients it seems #{clients}"
+#  logger.info "Saved BLE Clients it seems #{clients.first.attributes}"
   JSON.generate(clients)
 end
