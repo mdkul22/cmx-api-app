@@ -246,6 +246,16 @@ post '/events' do
      next if (seenEpoch == nil || seenEpoch == 0)  # This probe is useless, so ignore it
      bleclient = BLEClient.first_or_create(:mac => name, :lat => lat, :lng => lng, :x => x, :y => y, :seenString => seenString, :seenEpoch => seenEpoch, :floors => floors, :rssi => c['rssi'], :unc => loc['unc'])
      bleclient.save
+     if (true)             # If client was created, this will always be true
+      client.attributes = { :lat => lat, :lng => lng,
+                            :seenString => seenString, :seenEpoch => seenEpoch,
+                            :unc => loc['unc'],
+                            :x => x, y => y,
+                            :ssid => c['ssid'],
+                            :floors => floors,
+                            :rssi => c['rssi']
+                          }
+    end
     end
    end
 
