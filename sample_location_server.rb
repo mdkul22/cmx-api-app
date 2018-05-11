@@ -244,7 +244,7 @@ post '/events' do
      floors = map['data']['apFloors'] == nil ? "" : map['data']['apFloors'].join
      logger.info "AP #{map['data']['apMac']} on #{map['data']['apFloors']}: #{c}"
      next if (seenEpoch == nil || seenEpoch == 0)  # This probe is useless, so ignore it
-     bleclient = BLEClient.first_or_create(:mac => name, :lat => lat, :lng => lng, :x => x, :y => y, :seenString => seenString, :seenEpoch => seendEpoch, :floor => floors)                
+     bleclient = BLEClient.first_or_create(:mac => name, :lat => lat, :lng => lng, :x => x, :y => y, :seenString => seenString, :seenEpoch => seenEpoch, :floor => floors)                
      bleclient.save
     end
    end
