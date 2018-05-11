@@ -311,3 +311,9 @@ get %r{/clients/?} do
   clients = Client.all(:seenEpoch.gt => (Time.new - 300).to_i)
   JSON.generate(clients)
 end
+
+get %r{/bleclients/?} do
+  content_type :json
+  bleclients = BLEClient.all(:seenEpoch.gt => (Time.new - 300).to_i)
+  JSON.generate(bleclients)
+end
