@@ -85,10 +85,10 @@
 # message like this:
 #
 #   [2013-03-26T11:51:57.920806 #25266]  INFO -- : AP 11:22:33:44:55:66 on ["5th Floor"]:
-#   {"ipv4"=>"123.45.67.89", "location"=>{"lat"=>37.77050089978862, "lng"=>-122.38686903158863, 
+#   {"ipv4"=>"123.45.67.89", "location"=>{"lat"=>37.77050089978862, "lng"=>-122.38686903158863,
 #   "unc"=>11.39537928078731}, "seenTime"=>"2014-05-15T15:48:14Z", "ssid"=>"Cisco WiFi",
 #   "os"=>"Linux", "clientMac"=>"aa:bb:cc:dd:ee:ff",
-#   "seenEpoch"=>1400168894, "rssi"=>16, "ipv6"=>nil, "manufacturer"=>"Meraki"} 
+#   "seenEpoch"=>1400168894, "rssi"=>16, "ipv6"=>nil, "manufacturer"=>"Meraki"}
 #
 # After your first client pushes start arriving (this may take a minute or two),
 # you can get a JSON blob describing the last client probe using:
@@ -213,7 +213,9 @@ post '/events' do
     logger.warn "got post with unexpected version: #{map['version']}"
     return
   end
-
+  if map['type'] == "BluetoothDevicesSeen"
+    logger.info "AP #{map}"
+    
   map['data']['observations'].each do |c|
     loc  = c['location']
     next if loc == nil || c['ssid'] == nil
