@@ -215,7 +215,7 @@ post '/events' do
   end
   if map['type'] == "BluetoothDevicesSeen"
     logger.info "AP #{map}"
-    
+  end  
   map['data']['observations'].each do |c|
     loc  = c['location']
     next if loc == nil || c['ssid'] == nil
