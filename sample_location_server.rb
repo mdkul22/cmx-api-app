@@ -178,6 +178,23 @@ class Client
   property :rssi,       Float
 end
 
+class BLEClient
+  include DataMapper::Resource
+
+  property :id,         Serial                    # row key
+  property :mac,        String,  :key => true
+  property :seenString, String
+  property :seenEpoch,  Integer, :default => 0, :index => true
+  property :lat,        Float
+  property :lng,        Float
+  property :unc,        Float
+  property :x,          Float
+  property :y,          Float
+  property :ssid,       String
+  property :floors,     String
+  property :rssi,       Float
+end
+
 DataMapper.finalize
 
 DataMapper.auto_migrate!    # Creates your schema in the database
@@ -213,22 +230,49 @@ post '/events' do
     logger.warn "got post with unexpected version: #{map['version']}"
     return
   end
+
   if map['type'] == "BluetoothDevicesSeen"
-    logger.info "AP #{map}"
-  end  
-  map['data']['observations'].each do |c|
-    loc  = c['location']
-    next if loc == nil || c['ssid'] == nil
-    name = c['clientMac']
-    lat = loc['lat']
-    lng = loc['lng']
-    seenString = c['seenTime']
-    seenEpoch = c['seenEpoch']
-    floors = map['data']['apFloors'] == nil ? "" : map['data']['apFloors'].join
-    logger.info "AP #{map['data']['apMac']} on #{map['data']['apFloors']}: #{c}"
-    next if (seenEpoch == nil || seenEpoch == 0)  # This probe is useless, so ignore it
-    client = Client.first_or_create(:mac => name)
-    if (seenEpoch > client.seenEpoch)             # If client was created, this will always be true
+    map['data']['observations'].each do |c|
+     loc  = c['location']
+     next if loc == nil
+     name = c['clientMac']
+     lat = loc['lat']
+     lng = loc['lng']
+     x = loc['x']
+     y = loc['y']
+     seenString = c['seenTime']
+     seenEpoch = c['seenEpoch']
+     floors = map['data']['apFloors'] == nil ? "" : map['data']['apFloors'].join
+     logger.info "AP #{map['data']['apMac']} on #{map['data']['apFloors']}: #{c}"
+     next if (seenEpoch == nil || seenEpoch == 0)  # This probe is useless, so ignore it
+     bleclient = BLEClient.first_or_create(:mac => name)
+     if (seenEpoch > client.seenEpoch)             # If client was created, this will always be true
+      bleclient.attributes = { :lat => lat, :lng => lng,
+                            :seenString => seenString, :seenEpoch => seenEpoch,
+                            :unc => loc['unc'],
+                            :x => x, :y => y,
+                            :floors => floors,
+                            :rssi => c['rssi']
+                          }
+      bleclient.save
+    end
+   end
+  end
+  
+  if map['type'] == "DevicesSeen"
+    map['data']['observations'].each do |c|
+     loc  = c['location']
+     next if loc == nil || c['ssid'] == nil
+     name = c['clientMac']
+     lat = loc['lat']
+     lng = loc['lng']
+     seenString = c['seenTime']
+     seenEpoch = c['seenEpoch']
+     floors = map['data']['apFloors'] == nil ? "" : map['data']['apFloors'].join
+     logger.info "AP #{map['data']['apMac']} on #{map['data']['apFloors']}: #{c}"
+     next if (seenEpoch == nil || seenEpoch == 0)  # This probe is useless, so ignore it
+     client = Client.first_or_create(:mac => name)
+     if (seenEpoch > client.seenEpoch)             # If client was created, this will always be true
       client.attributes = { :lat => lat, :lng => lng,
                             :seenString => seenString, :seenEpoch => seenEpoch,
                             :unc => loc['unc'],
@@ -239,6 +283,7 @@ post '/events' do
                           }
       client.save
     end
+   end
   end
   ""
 end
