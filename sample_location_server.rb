@@ -254,11 +254,11 @@ post '/events' do
                             :rssi => c['rssi']
                           }
       bleclient.save
+      logger.info "data is #{bleclient}"
     end
    end
   end
-  ""
-end
+
 
   if map['type'] == "DevicesSeen"
     map['data']['observations'].each do |c|
@@ -316,6 +316,6 @@ end
 get %r{/bleclients/?} do
   content_type :json
   bleclients = BLEClient.all(:seenEpoch.gt => (Time.new - 300).to_i)
+  logger.info "Saved BLE Clients it seems #{bleclients}"
   JSON.generate(bleclients)
-  logger.info "Saved BLE Clients it seems"
 end
