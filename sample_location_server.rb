@@ -315,7 +315,7 @@ end
 
 get %r{/bleclients/?} do
   content_type :json
-  bleclients = BLEClient.all(:seenEpoch.gt => (Time.new - 300).to_i)
+  clients = BLEClient.all(:seenEpoch.gt => (Time.new - 300).to_i)
   logger.info "Saved BLE Clients it seems #{clients}"
   JSON.generate(clients)
 end
