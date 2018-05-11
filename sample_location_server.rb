@@ -254,11 +254,11 @@ post '/events' do
                             :rssi => c['rssi']
                           }
       bleclient.save
+      logger.info "data is #{bleclient}"
     end
    end
   end
-  ""
-end
+
 
   if map['type'] == "DevicesSeen"
     map['data']['observations'].each do |c|
