@@ -257,6 +257,8 @@ post '/events' do
     end
    end
   end
+  ""
+end
 
   if map['type'] == "DevicesSeen"
     map['data']['observations'].each do |c|
