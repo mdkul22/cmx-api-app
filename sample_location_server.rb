@@ -244,19 +244,9 @@ post '/events' do
      floors = map['data']['apFloors'] == nil ? "" : map['data']['apFloors'].join
      logger.info "AP #{map['data']['apMac']} on #{map['data']['apFloors']}: #{c}"
      next if (seenEpoch == nil || seenEpoch == 0)  # This probe is useless, so ignore it
-     bleclient = BLEClient.first_or_create(:mac => name)
-     if (seenEpoch > bleclient.seenEpoch)
-      bleclient.lat =lat
-      bleclient.lng = lng,
-      bleclient.seenString = seenString
-      bleclient.seenEpoch = seenEpoch
-      bleclient.unc = loc['unc']
-      bleclient.x = x
-      bleclient.y = y
-      bleclient.floors = apFloors
-      bleclient.rssi = c['rssi']             # If client was created, this will always be true
-      bleclient.save
-    end
+     bleclient = BLEClient.first_or_create({:mac => name}, {:lat => lat,
+      :lng => lng, :seenString = seenString, :seenEpoch => seenEpoch,
+      :unc = loc['unc'], :x => x, :y => y, :floors = floors, :rssi = c['rssi']})
     end
    end
 
