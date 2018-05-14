@@ -112,7 +112,7 @@
   // Looks up all MAC addresses
   function lookupAll() {
     $('#last-mac').text("Looking up all clients...");
-    $.getJSON('/clients/', function (response) {
+    $.getJSON('/bleclients/', function (response) {
       trackAll(response);
     });
   }
