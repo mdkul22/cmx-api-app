@@ -253,7 +253,7 @@ post '/events' do
                             :floors => floors,
                             :rssi => c['rssi']
                           }
-     bleclient.save
+     bleclient.update
     end
     end
    end
@@ -281,7 +281,7 @@ post '/events' do
                             :floors => floors,
                             :rssi => c['rssi']
                           }
-      client.save
+      client.update
     end
    end
   end
