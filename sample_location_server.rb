@@ -308,7 +308,7 @@ end
 # and returns a JSON blob of all clients.
 get %r{/bleclients/?} do
   content_type :json
-  clients = BLEClient.all(:seenEpoch.gt => (Time.new - 300).to_i)
+  clients = BLEClient.all()
   JSON.generate(clients)
 #  logger.info "clients is #{clients.first.attributes}"
 end
