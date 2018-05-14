@@ -171,8 +171,8 @@ class Client
   property :lat,        Float
   property :lng,        Float
   property :unc,        Float
-  property :manufacturer, String
-  property :os,         String
+  property :x,          String
+  property :y,         String
   property :ssid,       String
   property :floors,     String
   property :rssi,       Float
@@ -244,7 +244,7 @@ post '/events' do
      floors = map['data']['apFloors'] == nil ? "" : map['data']['apFloors'].join
      logger.info "AP #{map['data']['apMac']} on #{map['data']['apFloors']}: #{c}"
      next if (seenEpoch == nil || seenEpoch == 0)  # This probe is useless, so ignore it
-     bleclient = BLEClient.first_or_create(:mac => name)
+     bleclient = Client.first_or_create(:mac => name)
      bleclient.attributes = {
        :lat => lat,
        :lng => lng,
@@ -311,7 +311,7 @@ end
 # and returns a JSON blob of all clients.
 get %r{/bleclients/?} do
   content_type :json
-  bclients = BLEClient.all(:seenEpoch.gt => (Time.new -300).to_i)
+  bclients = Client.all(:seenEpoch.gt => (Time.new -300).to_i)
   JSON.generate(bclients)
 #  logger.info "clients is #{clients.first.attributes}"
 end
