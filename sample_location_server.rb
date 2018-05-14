@@ -233,7 +233,7 @@ post '/events' do
   if map['type'] == "BluetoothDevicesSeen"
     map['data']['observations'].each do |c|
      loc  = c['location']
-     next if loc == nil || c['rssi'] < -50
+     next if loc == nil || c['rssi'] < -70
      name = c['clientMac']
      lat = loc['lat']
      lng = loc['lng']
