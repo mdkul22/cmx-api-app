@@ -171,8 +171,8 @@ class Client
   property :lat,        Float
   property :lng,        Float
   property :unc,        Float
-  property :x,          String
-  property :y,         String
+  property :ble,        String
+  property :manufacturer, String
   property :ssid,       String
   property :floors,     String
   property :rssi,       Float
@@ -237,8 +237,8 @@ post '/events' do
      name = c['clientMac']
      lat = loc['lat']
      lng = loc['lng']
-     x = loc['x']
-     y = loc['y']
+     ble = "yes"
+     man = "none"
      seenString = c['seenTime']
      seenEpoch = c['seenEpoch']
      floors = map['data']['apFloors'] == nil ? "" : map['data']['apFloors'].join
@@ -251,8 +251,8 @@ post '/events' do
        :seenString => seenString,
        :seenEpoch => seenEpoch,
        :unc => loc['unc'],
-       :x => x,
-       :y => y,
+       :ble => ble,
+       :manufacturer => man,
        :floors => floors,
        :rssi => c['rssi']
        }
@@ -279,7 +279,7 @@ post '/events' do
       client.attributes = { :lat => lat, :lng => lng,
                             :seenString => seenString, :seenEpoch => seenEpoch,
                             :unc => loc['unc'],
-                            :manufacturer => c['manufacturer'], :os => c['os'],
+                            :manufacturer => c['manufacturer'], :ble => "no",
                             :ssid => c['ssid'],
                             :floors => floors,
                             :rssi => c['rssi']
