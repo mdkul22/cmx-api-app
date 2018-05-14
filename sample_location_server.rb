@@ -178,24 +178,7 @@ class Client
   property :rssi,       Float
 end
 
-class BLEClient
-  include DataMapper::Resource
-
-  property :id,         Serial                    # row key
-  property :mac,        String,  :key => true
-  property :seenString, String
-  property :seenEpoch,  Integer, :default => 0, :index => true
-  property :lat,        Float
-  property :lng,        Float
-  property :unc,        Float
-  property :x,          Float
-  property :y,          Float
-  property :floors,     String
-  property :rssi,       Float
-end
-
 DataMapper.finalize
-
 DataMapper.auto_migrate!    # Creates your schema in the database
 
 # ---- Set up routes -------------------
@@ -309,12 +292,6 @@ end
 # This matches
 #   /clients OR /clients/
 # and returns a JSON blob of all clients.
-get %r{/bleclients/?} do
-  content_type :json
-  bclients = Client.all(:seenEpoch.gt => (Time.new -300).to_i)
-  JSON.generate(bclients)
-#  logger.info "clients is #{clients.first.attributes}"
-end
 
 get %r{/clients/?} do
   content_type :json

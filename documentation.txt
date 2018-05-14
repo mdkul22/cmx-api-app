@@ -1,0 +1,7 @@
+MERAKI-CMX-CUSTOM-app
+
+this code has been modified from the https://github.com/meraki/cmx-api-app
+repository. The major code has been done on ruby and javascript. Most of the modifications
+are based on the classes and objects provided by the example itself.
+
+This app allows us to  
