@@ -281,7 +281,7 @@ post '/events' do
                             :floors => floors,
                             :rssi => c['rssi']
                           }
-      client.update
+      client.save
     end
    end
   end
