@@ -310,6 +310,7 @@ get %r{/bleclients/?} do
   content_type :json
   clients = BLEClient.all()
   JSON.generate(clients)
+  clients.destroy
 #  logger.info "clients is #{clients.first.attributes}"
 end
 
@@ -318,4 +319,5 @@ get %r{/clients/?} do
   clients = Client.all(:seenEpoch.gt => (Time.new - 300).to_i)
 #  logger.info "Saved BLE Clients it seems #{clients.first.attributes}"
   JSON.generate(clients)
+  clients.destroy
 end
