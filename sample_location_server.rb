@@ -245,7 +245,7 @@ post '/events' do
      logger.info "AP #{map['data']['apMac']} on #{map['data']['apFloors']}: #{c}"
      next if (seenEpoch == nil || seenEpoch == 0)  # This probe is useless, so ignore it
      bleclient = BLEClient.first_or_create(:mac => name, :lat => lat, :lng => lng, :rssi => c['rssi'], :seenString => seenString, :unc => loc['unc'])
-     if (true)             # If client was created, this will always be true
+     if (seenEpoch > bleclient.seenEpoch)             # If client was created, this will always be true
      bleclient.attributes = { :lat => lat, :lng => lng,
                             :seenString => seenString, :seenEpoch => seenEpoch,
                             :unc => loc['unc'],
@@ -308,8 +308,8 @@ end
 # and returns a JSON blob of all clients.
 get %r{/bleclients/?} do
   content_type :json
-  clients = BLEClient.all()
-  JSON.generate(clients)
+  bclients = BLEClient.all(:seenEpoch.gt => (Time.new -300).to_i)
+  JSON.generate(bclients)
 #  logger.info "clients is #{clients.first.attributes}"
 end
 

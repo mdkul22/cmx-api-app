@@ -75,7 +75,7 @@
 
   // Looks up a single MAC address
   function lookup(mac) {
-    $.getJSON('/clients/' + mac, function (response) {
+    $.getJSON('/bleclients/' + mac, function (response) {
       track(response);
     });
   }
